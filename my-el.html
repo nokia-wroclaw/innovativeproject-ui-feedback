@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+
+<dom-module id="my-el">
+  <template>
+ 
+    <paper-button id="paper_button" on-click="changeText">Przycisk</paper-button>
+
+  </template>
+
+  <script>
+    /**
+     * `my-el`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class MyEl extends Polymer.Element {
+      static get is() { return 'my-el'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'my-el'
+          }
+        };
+      }
+      changeText(){
+          var button=this.$.paper_button;
+          button.textContent="zmieniony";
+    }
+    }
+
+    window.customElements.define(MyEl.is, MyEl);
+  </script>
+</dom-module>
