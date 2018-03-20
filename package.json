@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "html2canvas": "^1.0.0-alpha.10",
+    "material-ui": "^0.20.0",
+    "material-ui-image": "^2.1.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "url-to-screenshot": "^2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

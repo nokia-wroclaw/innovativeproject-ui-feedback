@@ -1,5 +1,8 @@
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import ListExample from './MUI/GridList.js';
 import logo from './logo.svg';
 import './App.css';
 
@@ -14,6 +17,7 @@ class App extends Component {
         <p className="App-intro">
           Wcisnij przycisk, którego nie ma :)
         </p>
+        <p><MuiThemeProvider><ListExample/></MuiThemeProvider></p>
       </div>
     );
   }
