@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zrob mi fotke</title>
+
+    <!-- HTML2CANVAS -->
+    <script src="js/html2canvas.js"></script>
+    <!-- jQUERY -->
+    <script  src="https://code.jquery.com/jquery-3.2.1.min.js"  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="  crossorigin="anonymous"></script>
+
+    <!-- BOOTSTRAP 4 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    
+    <!-- CSS  -->
+    <style>
+        body, html {
+            height: 100%;
+        }
+        .bg {
+            background-image: url("images/bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .caption {
+            font-family: 'Times New Roman';
+            text-transform: uppercase;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #000;
+        }
+        .container {
+            position: left;
+            top: 380px;
+        }
+        .caption span.border {
+            background-color: #111;
+            color: #fff;
+            padding: 18px;
+            font-size: 25px;
+        }
+    </style>
+    <script>
+        function getScreen() {
+            var caption = $('#caption-input').val();
+            $("#caption-text").html(caption);
+            $("#panel").hide();
+            html2canvas(document.body).then(function(canvas) {
+    // Export the canvas to its data URI representation
+    var base64image = canvas.toDataURL("image/png");
+
+    // Open the image in a new window
+    window.open(base64image , "_blank");
+/*
+       var output = base64image.replace(/^data:image\/(png|jpg);base64,/, "");
+        console.log("jestem");
+        $.ajax({
+            url: "/components/nowy-element/demo/convert.php",
+            data: {
+                output:output
+            },
+            type: "POST",
+            success : function(response)
+                {
+                    console.log(response);
+                    $('#image_id img').attr('src', response);
+                }
+    });
+    */
+});
+}
+        /*
+            html2canvas(document.body, {
+                dpi: 192,
+                onrendered: function(canvas) {
+                    $("#blank").attr('href', canvas.toDataURL(""));
+                    $("#blank").attr('download', caption + '.png');
+                    $("#blank")[0].click();
+                }
+            });
+        }
+        */
+    </script>
+</head>
+<body class="bg">
+    <div class="container">
+        <br><br><br>
+        <div class="row">
+            <div class="col-md-6 offset-md-3" style="background: white; float: left; padding: 20px; box-shadow: 10px 10px 5px #888888;">
+                <h1>Wpisz tekst i zrób mi fotkę</h1>
+                <p style="font-style: italic;">Jestem sympatycznym dogiem</p>
+                <hr>
+                <input type="text" name="caption-input" id="caption-input" placeholder="Caption..." value="" class="form-control" style="border-radius: 0px;">
+                <br>
+                <a href="javascript:getScreen();" class="btn btn-lg btn-block btn-outline-success">Chcesz mnie? Kliknij!</a>
+                <a href="" id="blank"></a>
+            </div>
+        </div>
+    </div>
+    <div class="caption" id="caption">
+        <span id="caption-text" class="border" style="text-align: center;">Cute Nokia dog</span>
+    </div>
+</body>
+</html>
