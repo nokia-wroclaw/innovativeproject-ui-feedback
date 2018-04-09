@@ -1,6 +1,5 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
 
 
 <dom-module id="my-el">
@@ -19,6 +18,18 @@
      * @polymer
      * @demo demo/index.html
      */
+    function createCORSRequest(method,url) {
+        var xhr = new XMLHttpRequest();
+        if("withCredentials" in xhr){ //check if object has a "withCredentials" property -->XMLHTTTPRequest2
+            xhr.open(method,url,true);
+        }else if (typeof XDomainRequest!= "undefined"){  //Check if it is XDomainRequest, it only appears in IE
+            xhr=new XDomainRequest();
+            xhr.open(method,url);
+        } else{
+            xhr=null;
+        }
+        return xhr;
+    }
     class MyEl extends Polymer.Element {
       static get is() { return 'my-el'; }
       static get properties() {
@@ -32,6 +43,15 @@
       changeText(){
           var button=this.$.paper_button;
           button.textContent="zmieniony";
+          var xhr=createCORSRequest('POST',"http://localhost:3000/convert");
+          if(!xhr){
+              throw new Error('CORS not supported');
+          }
+          const getUrl = window.location.href;
+          console.log(getUrl);
+          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhr.send('url='+getUrl+'&name=testcors.png');
+
     }
     }
 

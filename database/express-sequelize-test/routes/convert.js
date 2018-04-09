@@ -14,7 +14,10 @@ router.post('/', async function (req, res){
         await browser.close();
 
         convert.use(express.static('public'));
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.send('http://localhost:3000/'+req.body.name)
+
     } catch (err) {
         console.error(err);
         res.status(500);
