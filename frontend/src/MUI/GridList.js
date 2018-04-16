@@ -17,27 +17,26 @@ const styles = {
   },
 };
 
-const tilesData = [
+const url = "http://localhost:3000/screenshots";
+var path = "http://localhost:3000/";
+fetch(url)
+    .then((res) => { return res.json() })
+    .then((data) => {
+        let result;
+        data.forEach((img) => {
+            result =img.title;
+            path+=result;
+        });
+    });
+
+
+var tilesData = [
   {
-    img: 'https://www.tabletowo.pl/wp-content/uploads/2018/01/Doge-Piese%C5%82.jpg',
-    title: 'Pieseł',
-    author: 'Andrzej',
+      //img: path,
+      img: 'http://localhost:3000/test.png',
+    title: 'tytul',
+    author: 'Dżesika',
   },
-  {
-    img: 'https://samequizy.pl/wp-content/uploads/2017/01/filing_images_1acae313e5ef.jpg',
-    title: 'Pieseł #2',
-    author: 'Aniela',
-  },
-  {
-    img: 'https://i.ytimg.com/vi/GnrkCXk4BNs/hqdefault.jpg',
-    title: 'Git',
-    author: 'Jan',
-  },
-  {
-    img: 'https://zdnet2.cbsistatic.com/hub/i/2017/05/24/6754c961-0679-4a70-84a9-9280da617d2f/ab9be362c48461dcd40c9218786e62d6/nokia-3310-main.jpg',
-    title: 'Nokia',
-    author: 'unnamed',
-  }, 
   
 ];
 
@@ -55,7 +54,7 @@ const ListExample = () => (
         <GridTile
           key={tile.img}
           title={tile.title}
-          subtitle={<span>by <b>{tile.author}</b></span>}
+//          subtitle={<span>by <b>{tile.author}</b></span>}
           actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
         >
           <img src={tile.img} />

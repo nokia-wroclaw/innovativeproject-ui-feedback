@@ -7,15 +7,14 @@ router.use(cors());
 /* GET Screenshot listing. */
 router.get('/', function (req, res, next) {
     model.Screenshot.findAll({})
-        .then(Screenshot => res.json({
-        error: false,
-        data: Screenshot
-    }))
-.catch(error => res.json({
+        .then(Screenshot => res.json(Screenshot))
+.catch(error => {
+    return res.json({
         error: true,
         data: [],
         error: error
-    }));
+    });
+})
 });
 
 router.post('/', function (req, res, next) {
@@ -32,11 +31,6 @@ router.post('/', function (req, res, next) {
         data: Screenshot,
         message: 'New Screenshot has been created.'
     }))
-.catch(error => res.json({
-        error: true,
-        data: [],
-        error: error
-    }));
 });
 
 
