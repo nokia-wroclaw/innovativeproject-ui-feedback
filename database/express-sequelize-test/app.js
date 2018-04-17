@@ -8,6 +8,7 @@ const puppeteer = require('puppeteer');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var comments = require('./routes/comments');
+var screenshots = require('./routes/screenshots');
 const convertsRouter  = require('./routes/convert');
 
 var app = express();
@@ -28,6 +29,9 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/comments', comments);
 app.use('/convert', convertsRouter);
+app.use('/screenshots', screenshots);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
