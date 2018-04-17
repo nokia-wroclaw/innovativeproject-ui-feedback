@@ -42,18 +42,18 @@
           const for_database={
               title : name
           };
-          fetch(url, {
-              body: JSON.stringify(data),
+          fetch(db, {
+              body: JSON.stringify(for_database),
               headers: {
-
                   'content-type': 'application/json'
               },
               method: 'POST',
               mode: 'cors'
-          }).then(response => console.log(response));
-          fetch(db, {
-              body: JSON.stringify(for_database),
+          }).then(response => console.log(response))
+          fetch(url, {
+              body: JSON.stringify(data),
               headers: {
+
                   'content-type': 'application/json'
               },
               method: 'POST',

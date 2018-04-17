@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import ListExample from './MUI/GridList.js';
+import {ListExample} from './MUI/GridList.js';
 import logo from './logo.svg';
 import './App.css';
 
