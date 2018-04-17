@@ -1,9 +1,24 @@
 {
- "development": {
+  "development": {
     "username": "andrzej",
     "password": "sagan",
     "database": "nokia",
     "host": "localhost",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "routes": {
+      "polymer": {
+        "host": "http://localhost",
+        "port": 3000,
+        "target": "/component/my-el.html"
+      },
+      "backend": {
+        "host": "http://localhost",
+        "port": 3000
+      },
+      "frontend": {
+        "host": "http://localhost",
+        "port": 3001
+      }
+    }
   }
 }
