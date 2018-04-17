@@ -15,22 +15,21 @@ convert.post('/', async function (req, res) {
         const browser = await puppeteer.launch({
             headless: false
         });
+        const title = Date.now();
         const page = await browser.newPage();
         await page.goto(req.body.url, {waitUntil: "networkidle2"});
-        await page.screenshot({path: 'public/' + req.body.name, fullPage: true});
+        await page.screenshot({path: 'public/' + title + '.png', fullPage: true});
         await browser.close();
-        const title = Date.now();
         const screenshot = await model.Screenshot.create({
             title
         });
 
-        res.status(201).json({
+        await res.sendStatus(201,{
             error: false,
-            data: screenshot,
+            data: `${config.routes.backend.host}:${config.routes.backend.port}/download/${title}.png`,
             message: 'New Screenshot has been created.'
 
         });
-        res.send(`${config.routes.backend.host}:${config.routes.backend.port}/download/${title}.png`)
 
 
     } catch (err) {
