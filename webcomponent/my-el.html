@@ -1,78 +1,75 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
-
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 
 <dom-module id="my-el">
-  <template>
- 
-    <paper-button id="paper_button" on-click="changeText">Przycisk</paper-button>
 
-  </template>
+    <template>
+        <style>
+            paper-dialog.position{
+                position: fixed;
+            }
+        </style>
+        <paper-dialog id="paper_dialog" class="position" modal>
+            <p>Przykładowy tekst</p>
+            <div><img id="dialog_img"/></div><br>
+            <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+        </paper-dialog>
+        <paper-button id="paper_button" on-click="changeText">Przycisk</paper-button>
 
-  <script>
-    /**
-     * `my-el`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class MyEl extends Polymer.Element {
-      static get is() { return 'my-el'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'my-el'
-          }
-        };
-      }
-      changeText(){
-          var button=this.$.paper_button;
-          button.textContent="zmieniony";
+    </template>
 
-          const url="http://localhost:3000/convert";
-          const db="http://localhost:3000/screenshots";
-          const name = "test.png";
-          const data={
-              url : window.location.href.toString(),
-              name : name
-          };
-          const for_database={
-              title : name
-          };
-          fetch(url, {
-              body: JSON.stringify(data),
-              headers: {
+    <script>
+        /**
+         * `my-el`
+         *
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class MyEl extends Polymer.Element {
+            static get is() {
+                return 'my-el';
+            }
 
-                  'content-type': 'application/json'
-              },
-              method: 'POST',
-              mode: 'cors'
-          }).then(response => {
-              const reader = response.body.getReader();
-              const stream = new ReadableStream({
-                  start(controller) {
-                      function push() {
-                          reader.read().then(({ done, value }) => {
-                              if (done) {
-                                  controller.close();
-                                  return;
-                              }
-                              controller.enqueue(value);
-                              push();
-                          });
-                      };
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'my-el'
+                    }
+                };
+            }
 
-                      push();
-                  }
-              });
-          })
+            changeText() {
+                const button = this.$.paper_button;
+                button.textContent = "zmieniony";
 
-    }
-    }
+                const url = "http://localhost:3000/convert";
+                const data = {
+                    url: window.location.href.toString()
+                };
+                fetch(url, {
+                    body: JSON.stringify(data),
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                    mode: 'cors'
+                }).then(response => {
 
-    window.customElements.define(MyEl.is, MyEl);
-  </script>
+                    return response.json()
+                }).then(data => {
+                    this.$.paper_dialog.open();
+                    this.$.dialog_img.src=data.data;
+                    console.log(data)});
+
+            }
+
+
+        }
+
+        window.customElements.define(MyEl.is, MyEl);
+    </script>
 </dom-module>

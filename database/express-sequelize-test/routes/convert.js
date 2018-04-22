@@ -24,12 +24,13 @@ convert.post('/', async function (req, res) {
             title
         });
 
-        await res.sendStatus(201,{
+        await res.send(201,{
             error: false,
             data: `${config.routes.backend.host}:${config.routes.backend.port}/download/${title}.png`,
             message: 'New Screenshot has been created.'
 
         });
+
 
 
     } catch (err) {
