@@ -1,11 +1,17 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
-
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="my-el">
   <template>
- 
-    <paper-button id="paper_button" on-click="changeText">Przycisk</paper-button>
+    <style>
+      paper-fab.blue {
+        --paper-fab-background: var(--paper-light-blue-500);
+        --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+      }
+    </style>
+    <paper-fab icon="favorite" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
 
   </template>
 
