@@ -1,47 +1,45 @@
-var express = require('express');
-var router = express.Router();
-var model = require('../models/index');
+const express = require('express');
+const router = express.Router();
+const model = require('../models/index');
 const cors = require('cors');
 router.use(cors());
 
-/* GET Screenshot listing. */
-router.get('/', function (req, res, next) {
+
+router.get('/', function (req, res) {
     model.Screenshot.findAll({})
         .then(Screenshot => res.json(Screenshot))
-.catch(error => {
-    return res.json({
-        error: true,
-        data: [],
-        error: error
-    });
-})
+        .catch(error => {
+            return res.json({
+                error: true,
+                data: [],
+                error: error
+            });
+        })
 });
 
-router.post('/', function (req, res, next) {
+
+router.post('/', function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    const {
-        title
-    } = req.body;
-
 });
 
 
-/* Delete Screenshot. */
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', function (req, res) {
     const screenshot_id = req.params.id;
 
-    model.Screenshot.destroy({ where: {
+    model.Screenshot.destroy({
+        where: {
             id: screenshot_id
-        }})
+        }
+    })
         .then(status => res.status(201).json({
-        error: false,
-        message: 'Comment has been delete.'
-    }))
-.catch(error => res.json({
-        error: true,
-        error: error
-    }));
+            error: false,
+            message: 'Comment has been delete.'
+        }))
+        .catch(error => res.json({
+            error: true,
+            error: error
+        }));
 });
 
 module.exports = router;

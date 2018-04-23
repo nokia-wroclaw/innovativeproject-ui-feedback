@@ -1,10 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var model = require('../models/index');
- 
+const express = require('express');
+const router = express.Router();
+const model = require('../models/index');
 
-/* GET User listing. */
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
     model.User.findAll({})
         .then(users => res.json({
             error: false,
@@ -16,19 +14,19 @@ router.get('/', function (req, res, next) {
             error: error
         }));
 });
- 
-/* POST User. */
-router.post('/', function (req, res, next) {
+
+
+router.post('/', function (req, res) {
     const {
         name,
         team,
         email
     } = req.body;
     model.User.create({
-            name: name,
-            team: team,
-            email: email
-        })
+        name: name,
+        team: team,
+        email: email
+    })
         .then(User => res.status(201).json({
             error: false,
             data: User,
@@ -40,24 +38,23 @@ router.post('/', function (req, res, next) {
             error: error
         }));
 });
- 
- 
-/* update User. */
-router.put('/:id', function (req, res, next) {
- 
+
+
+router.put('/:id', function (req, res) {
+
     const user_id = req.params.id;
- 
-    const { name, team, email } = req.body;
- 
+
+    const {name, team, email} = req.body;
+
     model.User.update({
-            name: name,
-            team: team,
-            email: email
-        }, {
-            where: {
-                id: user_id
-            }
-        })
+        name: name,
+        team: team,
+        email: email
+    }, {
+        where: {
+            id: user_id
+        }
+    })
         .then(User => res.status(201).json({
             error: false,
             message: 'User has been updated.'
@@ -66,15 +63,17 @@ router.put('/:id', function (req, res, next) {
             error: true,
             error: error
         }));
-}); 
- 
-/* Delete User. */
-router.delete('/:id', function (req, res, next) {
+});
+
+
+router.delete('/:id', function (req, res) {
     const user_id = req.params.id;
- 
-    model.User.destroy({ where: {
-        id: user_id
-    }})
+
+    model.User.destroy({
+        where: {
+            id: user_id
+        }
+    })
         .then(status => res.status(201).json({
             error: false,
             message: 'User has been delete.'
@@ -84,5 +83,5 @@ router.delete('/:id', function (req, res, next) {
             error: error
         }));
 });
- 
+
 module.exports = router;

@@ -1,10 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var model = require('../models/index');
- 
+const express = require('express');
+const router = express.Router();
+const model = require('../models/index');
 
-/* GET Comment listing. */
-router.get('/', function (req, res, next) {
+
+router.get('/', function (req, res) {
     model.Comment.findAll({})
         .then(comments => res.json({
             error: false,
@@ -16,14 +15,14 @@ router.get('/', function (req, res, next) {
             error: error
         }));
 });
- 
-/* POST Comment. */
-router.post('/', function (req, res, next) {
-    const { topic, description } = req.body;
+
+
+router.post('/', function (req, res) {
+    const {topic, description} = req.body;
     model.Comment.create({
-            topic: topic,
-            description: description
-        })
+        topic: topic,
+        description: description
+    })
         .then(Comment => res.status(201).json({
             error: false,
             data: Comment,
@@ -35,23 +34,22 @@ router.post('/', function (req, res, next) {
             error: error
         }));
 });
- 
- 
-/* update Comment. */
-router.put('/:id', function (req, res, next) {
- 
+
+
+router.put('/:id', function (req, res) {
+
     const comment_id = req.params.id;
- 
-    const { topic, description } = req.body;
- 
+
+    const {topic, description} = req.body;
+
     model.Comment.update({
-            topic: topic,
-            description: description
-        }, {
-            where: {
-                id: comment_id
-            }
-        })
+        topic: topic,
+        description: description
+    }, {
+        where: {
+            id: comment_id
+        }
+    })
         .then(Comment => res.status(201).json({
             error: false,
             message: 'Comment has been updated.'
@@ -60,15 +58,17 @@ router.put('/:id', function (req, res, next) {
             error: true,
             error: error
         }));
-}); 
- 
-/* Delete Comment. */
-router.delete('/:id', function (req, res, next) {
+});
+
+
+router.delete('/:id', function (req, res) {
     const comment_id = req.params.id;
- 
-    model.Comment.destroy({ where: {
-        id: comment_id
-    }})
+
+    model.Comment.destroy({
+        where: {
+            id: comment_id
+        }
+    })
         .then(status => res.status(201).json({
             error: false,
             message: 'Comment has been delete.'
@@ -78,5 +78,5 @@ router.delete('/:id', function (req, res, next) {
             error: error
         }));
 });
- 
+
 module.exports = router;

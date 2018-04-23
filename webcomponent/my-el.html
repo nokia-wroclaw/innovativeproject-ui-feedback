@@ -5,25 +5,27 @@
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="my-el">
-  <template>
-    
-    <style>
-      paper-fab.blue {
-        --paper-fab-background: var(--paper-light-blue-500);
-        --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
-      }            
-      paper-dialog.position{
-        position: fixed;
-      }
-    </style>
-    
-      <paper-fab icon="favorite" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
-      <paper-dialog id="paper_dialog" class="position" modal>
-        <p>Przykładowy tekst</p>
-        <div><img id="dialog_img"/></div><br>
-        <paper-button dialog-confirm autofocus>Prześlij</paper-button>
-      </paper-dialog>
-    
+    <template>
+
+        <style>
+            paper-fab.blue {
+                --paper-fab-background: var(--paper-light-blue-500);
+                --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+            }
+
+            paper-dialog.position {
+                position: fixed;
+            }
+        </style>
+
+        <paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
+        <paper-dialog id="paper_dialog" class="position" modal>
+            <p>Przykładowy tekst</p>
+            <div><img id="dialog_img"/></div>
+            <br>
+            <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+        </paper-dialog>
+
     </template>
 
     <script>
@@ -69,8 +71,9 @@
                     return response.json()
                 }).then(data => {
                     this.$.paper_dialog.open();
-                    this.$.dialog_img.src=data.data;
-                    console.log(data)});
+                    this.$.dialog_img.src = data.data;
+                    console.log(data)
+                });
 
             }
 

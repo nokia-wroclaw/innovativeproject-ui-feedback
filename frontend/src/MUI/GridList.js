@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
@@ -6,25 +6,22 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
 
 const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    width: 500,
-    height: 450,
-    overflowY: 'auto',
-  },
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    gridList: {
+        width: 500,
+        height: 450,
+        overflowY: 'auto',
+    },
 };
 
 const url = "http://localhost:3000/screenshots";
-var path = "http://localhost:3000/download";
+const path = "http://localhost:3000/download";
 
 
-/**
- * A simple example of a scrollable `GridList` containing a [Subheader](/#/components/subheader).
- */
 export class ListExample extends Component {
     constructor() {
         super();
@@ -45,7 +42,7 @@ export class ListExample extends Component {
             });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.generate().then(paths => this.setState(() => ({'paths': paths})));
     }
 
@@ -60,7 +57,6 @@ export class ListExample extends Component {
                     <Subheader>Obrazki</Subheader>
                     {this.state.paths.map((tile) => (
                         <GridTile
-                            //          subtitle={<span>by <b>{tile.author}</b></span>}
                             actionIcon={<IconButton><StarBorder color="white"/></IconButton>}
                         >
                             <img src={tile}/>
