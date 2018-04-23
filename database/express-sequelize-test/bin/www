@@ -7,12 +7,14 @@
 var app = require('../app');
 var debug = require('debug')('express-sequelize-test:server');
 var http = require('http');
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || config.routes.backend.port);
 app.set('port', port);
 
 /**
