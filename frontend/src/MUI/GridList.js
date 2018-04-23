@@ -19,7 +19,7 @@ const styles = {
 };
 
 const url = "http://localhost:3000/screenshots";
-var path = "http://localhost:3000/";
+var path = "http://localhost:3000/download";
 
 
 /**
@@ -40,7 +40,7 @@ export class ListExample extends Component {
             })
             .then((data) => {
                 return data.map((img) =>
-                    path+img.title
+                    path + '/' + img.title + '.png'
                 );
             });
     }

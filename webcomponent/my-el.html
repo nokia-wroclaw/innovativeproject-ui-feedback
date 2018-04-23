@@ -1,74 +1,82 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="my-el">
   <template>
+    
     <style>
       paper-fab.blue {
         --paper-fab-background: var(--paper-light-blue-500);
         --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+      }            
+      paper-dialog.position{
+        position: fixed;
       }
     </style>
-    <paper-fab icon="favorite" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
+    
+      <paper-fab icon="favorite" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
+      <paper-dialog id="paper_dialog" class="position" modal>
+        <p>Przykładowy tekst</p>
+        <div><img id="dialog_img"/></div><br>
+        <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+      </paper-dialog>
+    
+    </template>
 
-  </template>
+    <script>
+        /**
+         * `my-el`
+         *
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class MyEl extends Polymer.Element {
+            static get is() {
+                return 'my-el';
+            }
 
-  <script>
-    /**
-     * `my-el`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class MyEl extends Polymer.Element {
-      static get is() { return 'my-el'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'my-el'
-          }
-        };
-      }
-      changeText(){
-          var button=this.$.paper_button;
-          button.textContent="zmieniony";
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'my-el'
+                    }
+                };
+            }
 
-          const url="http://localhost:3000/convert";
-          const db="http://localhost:3000/screenshots";
-          const name = "test.png";
-          const data={
-              url : window.location.href.toString(),
-              name : name
-          };
-          const for_database={
-              title : name
-          };
-          fetch(db, {
-              body: JSON.stringify(for_database),
-              headers: {
-                  'content-type': 'application/json'
-              },
-              method: 'POST',
-              mode: 'cors'
-          }).then(response => console.log(response))
-          fetch(url, {
-              body: JSON.stringify(data),
-              headers: {
+            changeText() {
+                const button = this.$.paper_button;
+                button.textContent = "zmieniony";
 
-                  'content-type': 'application/json'
-              },
-              method: 'POST',
-              mode: 'cors'
-          }).then(response => console.log(response))
+                const url = "http://localhost:3000/convert";
+                const data = {
+                    url: window.location.href.toString()
+                };
+                fetch(url, {
+                    body: JSON.stringify(data),
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                    mode: 'cors'
+                }).then(response => {
 
-    }
-    }
+                    return response.json()
+                }).then(data => {
+                    this.$.paper_dialog.open();
+                    this.$.dialog_img.src=data.data;
+                    console.log(data)});
 
-    window.customElements.define(MyEl.is, MyEl);
-  </script>
+            }
+
+
+        }
+
+        window.customElements.define(MyEl.is, MyEl);
+    </script>
 </dom-module>

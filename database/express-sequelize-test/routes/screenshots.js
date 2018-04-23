@@ -23,14 +23,7 @@ router.post('/', function (req, res, next) {
     const {
         title
     } = req.body;
-    model.Screenshot.create({
-        title: title
-    })
-        .then(Screenshot => res.status(201).json({
-        error: false,
-        data: Screenshot,
-        message: 'New Screenshot has been created.'
-    }))
+
 });
 
 
