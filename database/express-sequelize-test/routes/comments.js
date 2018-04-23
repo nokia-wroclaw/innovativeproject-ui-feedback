@@ -19,6 +19,7 @@ router.get('/', function (req, res) {
 
 router.post('/', function (req, res) {
     const {topic, description} = req.body;
+
     model.Comment.create({
         topic: topic,
         description: description
