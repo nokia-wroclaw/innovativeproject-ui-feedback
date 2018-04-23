@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zrob mi fotke</title>
+
+    <link rel="import" href="http://localhost:3000/component/my-el.html">
+
+    <!-- CSS  -->
+    <style>
+        body, html {
+            height: 100%;
+        }
+        .bg {
+            background-image: url("images/bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .caption {
+            font-family: 'Times New Roman';
+            text-transform: uppercase;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #000;
+        }
+        .container {
+            position: left;
+            top: 380px;
+        }
+        .caption span.border {
+            background-color: #111;
+            color: #fff;
+            padding: 18px;
+            font-size: 25px;
+        }
+    </style>
+</head>
+<body class="bg">
+<my-el></my-el>
+    <div class="container">
+        <br><br><br>
+        <div class="row">
+            <div class="col-md-6 offset-md-3" style="background: white; float: left; padding: 20px; box-shadow: 10px 10px 5px #888888;">
+                <h1>Zrób mi fotkę :)</h1>
+                <p style="font-style: italic;">Jestem sympatycznym dogiem</p>
+                <hr>
+                <a href="" class="btn btn-lg btn-block btn-outline-success">Chcesz mnie? Kliknij!</a>
+                <a href="" id="blank"></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
