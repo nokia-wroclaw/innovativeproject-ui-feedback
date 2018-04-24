@@ -5,81 +5,75 @@
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="my-el">
-    <template>
+	<template>
 
-        <style>
-            paper-fab.blue {
-                --paper-fab-background: var(--paper-light-blue-500);
-                --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
-            }
+		<style>
+						paper-fab.blue {
+								--paper-fab-background: var(--paper-light-blue-500);
+								--paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+						}
 
-            paper-dialog.position {
-                position: fixed;
-            }
-        </style>
-
-        <paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
-        <paper-dialog id="paper_dialog" class="position" modal>
-            <p>Przykładowy tekst</p>
-            <div><img id="dialog_img"/></div>
-            <br>
-            <paper-button dialog-confirm autofocus>Prześlij</paper-button>
-        </paper-dialog>
-
-    </template>
-
-    <script>
-        /**
-         * `my-el`
-         *
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/index.html
-         */
-        class MyEl extends Polymer.Element {
-            static get is() {
-                return 'my-el';
-            }
-
-            static get properties() {
-                return {
-                    prop1: {
-                        type: String,
-                        value: 'my-el'
-                    }
-                };
-            }
-
-            changeText() {
-                const button = this.$.paper_button;
-                button.textContent = "zmieniony";
-
-                const url = "http://localhost:3000/convert";
-                const data = {
-                    url: window.location.href.toString()
-                };
-                fetch(url, {
-                    body: JSON.stringify(data),
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    method: 'POST',
-                    mode: 'cors'
-                }).then(response => {
-
-                    return response.json()
-                }).then(data => {
-                    this.$.paper_dialog.open();
-                    this.$.dialog_img.src = data.data;
-                    console.log(data)
-                });
-
-            }
+						paper-dialog.position {
+								position: fixed;
+						}
 
 
-        }
+		</style>
 
-        window.customElements.define(MyEl.is, MyEl);
-    </script>
+		<paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
+		<paper-dialog id="paper_dialog" class="position" modal>
+			<p>Twój screen
+				<paper-button dialog-confirm autofocus>Prześlij</paper-button>
+			</p>
+			<div><img id="dialog_img"/></div>
+			<br>
+
+		</paper-dialog>
+
+	</template>
+
+	<script>
+
+	  class MyEl extends Polymer.Element {
+		  static get is() {
+				return 'my-el';
+			}
+
+			static get properties() {
+				return {
+					prop1: {
+						type: String,
+						value: 'my-el'
+					}
+				};
+			}
+
+			changeText() {
+				const button = this.$.paper_button;
+				button.textContent = "zmieniony";
+
+				const url = "http://localhost:3000/convert";
+				const data = {
+					url: window.location.href.toString()
+				};
+				fetch(url, {
+					body: JSON.stringify(data),
+					headers: {
+						'content-type': 'application/json'
+				  },
+				  method: 'POST',
+					mode: 'cors'
+				}).then(response => {
+          return response.json()
+				}).then(data => {
+					this.$.paper_dialog.open();
+					this.$.dialog_img.src = data.data;
+					console.log(data)
+				});
+			}
+		}
+
+		window.customElements.define(MyEl.is, MyEl);
+
+	</script>
 </dom-module>

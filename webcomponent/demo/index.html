@@ -10,7 +10,7 @@
 
     <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="http://localhost:3000/component/my-el.html">
+    <link rel="import" href="../my-el.html">
     <style>
       body, html {
         height: 100%;
@@ -22,6 +22,9 @@
         background-size: cover;
         background-repeat: no-repeat;
       }
+      .position {
+        position: fixed;
+      }
     </style>
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
@@ -29,13 +32,8 @@
     </custom-style>
   </head>
   <body class="bg">
-    <div class="vertical-section-container centered">
-      <h3>Basic my-el demo</h3>
-      <demo-snippet>
-        <template>
-          <my-el></my-el>
-        </template>
-      </demo-snippet>
+    <div class="position">
+      <my-el></my-el>
     </div>
   </body>
 </html>
