@@ -5,22 +5,20 @@
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="my-el">
-	<template>
+    <template>
 
-		<style>
-						paper-fab.blue {
-								--paper-fab-background: var(--paper-light-blue-500);
-								--paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
-						}
+        <style>
+            paper-fab.blue {
+                --paper-fab-background: var(--paper-light-blue-500);
+                --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+            }
 
-						paper-dialog.position {
-								position: fixed;
-						}
+            paper-dialog.position {
+                position: fixed;
+            }
+        </style>
 
-
-		</style>
-
-		<paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="changeText">Przycisk</paper-fab>
+		<paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="SendRequest">Przycisk</paper-fab>
 		<paper-dialog id="paper_dialog" class="position" modal>
 			<p>Twój screen
 				<paper-button dialog-confirm autofocus>Prześlij</paper-button>
@@ -30,7 +28,7 @@
 
 		</paper-dialog>
 
-	</template>
+    </template>
 
 	<script>
 
@@ -48,9 +46,9 @@
 				};
 			}
 
-			changeText() {
-				const button = this.$.paper_button;
-				button.textContent = "zmieniony";
+            SendRequest() {
+                const button = this.$.paper_button;
+                button.textContent = "zmieniony";
 
 				const url = "http://localhost:3000/convert";
 				const data = {
