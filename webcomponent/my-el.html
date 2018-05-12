@@ -13,65 +13,94 @@
                 --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
             }
 
+            .image-wrapper {
+                padding: 0 20px;
+                position: relative;
+            }
+
+            .attach-pin {
+                position: absolute;
+                height: 20px;
+                width: 20px;
+                background: red;
+            }
+
             paper-dialog.position {
                 position: fixed;
             }
         </style>
 
-		<paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="SendRequest">Przycisk</paper-fab>
-		<paper-dialog id="paper_dialog" class="position" modal>
-			<p>Twój screen
-				<paper-button dialog-confirm autofocus>Prześlij</paper-button>
-			</p>
-			<div><img id="dialog_img"/></div>
-			<br>
+        <paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="SendRequest">Przycisk</paper-fab>
+        <paper-dialog id="paper_dialog" class="position" modal>
+            <p>Twój screen
+                <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+            </p>
+            <div on-click="addPin" class="image-wrapper">
+                <template is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
+                    <div class="attach-pin" style$="top:[[pin.y]]px;left:[[pin.x]]px"></div>
+                </template>
+                <img id="dialog_img"/></div>
+        </paper-dialog>
 
-		</paper-dialog>
 
     </template>
 
-	<script>
+    <script>
+        const padding = 20;
+        const pinCorrection = 10;
 
-	  class MyEl extends Polymer.Element {
-		  static get is() {
-				return 'my-el';
-			}
+        class MyEl extends Polymer.Element {
+            static get is() {
+                return 'my-el';
+            }
 
-			static get properties() {
-				return {
-					prop1: {
-						type: String,
-						value: 'my-el'
-					}
-				};
-			}
+            static get properties() {
+                return {
+                    pinCoords: {
+                        type: Array,
+                        value: [],
+                        notify:true
+                    }
+                };
+            }
+
+            addPin(event) {
+                const positionTop = event.currentTarget.getBoundingClientRect().top;
+                const positionLeft = event.currentTarget.getBoundingClientRect().left;
+
+
+                this.push('pinCoords',{
+                    x: event.clientX - positionLeft - padding + pinCorrection,
+                    y: event.clientY - positionTop - pinCorrection
+                });
+            }
 
             SendRequest() {
                 const button = this.$.paper_button;
                 button.textContent = "zmieniony";
 
-				const url = "http://localhost:3000/convert";
-				const data = {
-					url: window.location.href.toString()
-				};
-				fetch(url, {
-					body: JSON.stringify(data),
-					headers: {
-						'content-type': 'application/json'
-				  },
-				  method: 'POST',
-					mode: 'cors'
-				}).then(response => {
-          return response.json()
-				}).then(data => {
-					this.$.paper_dialog.open();
-					this.$.dialog_img.src = data.data;
-					console.log(data)
-				});
-			}
-		}
+                const url = "http://localhost:3000/convert";
+                const data = {
+                    url: window.location.href.toString()
+                };
+                fetch(url, {
+                    body: JSON.stringify(data),
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                    mode: 'cors'
+                }).then(response => {
+                    return response.json()
+                }).then(data => {
+                    this.$.paper_dialog.open();
+                    this.$.dialog_img.src = data.data;
+                    console.log(data)
+                });
+            }
+        }
 
-		window.customElements.define(MyEl.is, MyEl);
+        window.customElements.define(MyEl.is, MyEl);
 
-	</script>
+    </script>
 </dom-module>
