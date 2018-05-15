@@ -5,6 +5,10 @@ module.exports = (sequelize, DataTypes) => {
 	}, {});
 	Screenshot.associate = function (models) {
 		// associations can be defined here
+
+		Screenshot.hasMany(models.Comment,{
+		foreignKey: 'UserId'
+		})
 	};
 	return Screenshot;
 };
