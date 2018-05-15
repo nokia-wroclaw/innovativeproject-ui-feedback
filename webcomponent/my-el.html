@@ -44,9 +44,9 @@
 
         <paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="SendRequest">Przycisk</paper-fab>
         <paper-spinner id="dialog_loading_icon" class="loading-icon thick"></paper-spinner>
-        <paper-dialog id="paper_dialog" class="position" modal>
+        <paper-dialog id="paper_dialog" class="position"  modal>
             <p>Twój screen
-                <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+                <paper-button dialog-confirm on-click="closeImgDialog" autofocus>Prześlij</paper-button>
 
             </p>
             <div on-click="addPin" class="image-wrapper">
@@ -54,7 +54,7 @@
                     <div class="attach-pin" style$="top:[[pin.y]]px;left:[[pin.x]]px"></div>
                 </template>
                 <img id="dialog_img"/></div>
-            <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj" confirm-button="Prześlij" on-confirm="confirm" on-dismiss="dismiss">
+            <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj" confirm-button="Prześlij" on-confirm="confirm_pin" on-dismiss="dismiss_pin">
                <paper-textarea label="Twój komentarz do pinezki..."></paper-textarea>
             </paper-alert-dialog>
         </paper-dialog>
@@ -80,7 +80,10 @@
                     }
                 };
             }
-
+            closeImgDialog(){
+                this.pinCoords.length=0;
+                this.$.attach_pin_template.render();
+            }
             addPin(event) {
                 const positionTop = event.currentTarget.getBoundingClientRect().top;
                 const positionLeft = event.currentTarget.getBoundingClientRect().left;
@@ -91,10 +94,10 @@
                     y: event.clientY - positionTop - pinCorrection
                 });
             }
-            confirm(){
+            confirm_pin(){
                 console.log(this.pinCoords[this.pinCoords.length-1]);
             }
-            dismiss(){
+            dismiss_pin(){
                 this.pinCoords.pop();
                 this.$.attach_pin_template.render();
             }
