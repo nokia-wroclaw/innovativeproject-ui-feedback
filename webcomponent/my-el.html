@@ -4,6 +4,10 @@
 <link rel="import" href="bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-alert-dialog/paper-alert-dialog.html">
+<link rel="import" href="bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="bower_components/paper-input/paper-input-behavior.html">
+
 
 <dom-module id="my-el">
     <template>
@@ -43,12 +47,16 @@
         <paper-dialog id="paper_dialog" class="position" modal>
             <p>Twój screen
                 <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+
             </p>
             <div on-click="addPin" class="image-wrapper">
-                <template is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
+                <template id="attach_pin_template" is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
                     <div class="attach-pin" style$="top:[[pin.y]]px;left:[[pin.x]]px"></div>
                 </template>
                 <img id="dialog_img"/></div>
+            <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj" confirm-button="Prześlij" on-confirm="confirm" on-dismiss="dismiss">
+               <paper-textarea label="Twój komentarz do pinezki..."></paper-textarea>
+            </paper-alert-dialog>
         </paper-dialog>
 
 
@@ -76,14 +84,20 @@
             addPin(event) {
                 const positionTop = event.currentTarget.getBoundingClientRect().top;
                 const positionLeft = event.currentTarget.getBoundingClientRect().left;
-
+                this.$.comment_dialog.open();
 
                 this.push('pinCoords',{
                     x: event.clientX - positionLeft - padding + pinCorrection,
                     y: event.clientY - positionTop - pinCorrection
                 });
             }
-
+            confirm(){
+                console.log(this.pinCoords[this.pinCoords.length-1]);
+            }
+            dismiss(){
+                this.pinCoords.pop();
+                this.$.attach_pin_template.render();
+            }
             SendRequest() {
                 const button = this.$.paper_button;
                 const loading_icon=this.$.dialog_loading_icon;
