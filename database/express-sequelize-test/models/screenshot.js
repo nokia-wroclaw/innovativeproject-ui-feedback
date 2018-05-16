@@ -1,14 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-	const Screenshot = sequelize.define('Screenshot', {
-		title: DataTypes.STRING
-	}, {});
-	Screenshot.associate = function (models) {
-		// associations can be defined here
+    const Screenshot = sequelize.define('Screenshot', {
+        title: DataTypes.STRING
+    }, {});
+    Screenshot.associate = function (models) {
+        // associations can be defined here
 
-		Screenshot.hasMany(models.Comment,{
-		foreignKey: 'UserId'
-		})
-	};
-	return Screenshot;
+        Screenshot.hasMany(models.Comment, {
+            foreignKey: 'ScreenshotId',
+            onDelete: 'CASCADE'
+        })
+    };
+    return Screenshot;
 };
