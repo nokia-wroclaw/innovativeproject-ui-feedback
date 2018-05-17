@@ -18,7 +18,6 @@ router.get('/', function (req, res) {
 
 
 router.post('/', function (req, res) {
-
    return model.sequelize.transaction(t =>
         model.Screenshot.create({
             title: req.body.title,
@@ -26,7 +25,7 @@ router.post('/', function (req, res) {
             transaction: t
         })
             .then(Screenshot => {
-                const comment_array = req.body.Comment.map(comment => (
+                const comment_array = req.body.comments.map(comment => (
                     {
                         ScreenshotId: Screenshot.id,
                         x: comment.x,

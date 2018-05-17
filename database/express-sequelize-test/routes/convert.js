@@ -16,9 +16,6 @@ convert.post('/', async function (req, res) {
 		await page.goto(req.body.url, {waitUntil: "networkidle2"});
 		await page.screenshot({path: 'public/' + title + '.png', fullPage: true});
 		await browser.close();
-		screenshot = await model.Screenshot.create({
-			title
-		});
 		await res.send(201, {
 			error: false,
 			data: `${config.routes.backend.host}:${config.routes.backend.port}/download/${title}.png`,

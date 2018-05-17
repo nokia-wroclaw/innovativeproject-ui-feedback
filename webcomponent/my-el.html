@@ -29,14 +29,17 @@
                 width: 20px;
                 background: red;
             }
-            .loading-icon{
+
+            .loading-icon {
                 position: absolute;
                 top: 50%;
                 left: 50%;
             }
+
             paper-spinner.thick {
                 --paper-spinner-stroke-width: 4px;
             }
+
             paper-dialog.position {
                 position: fixed;
             }
@@ -44,9 +47,9 @@
 
         <paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="SendRequest">Przycisk</paper-fab>
         <paper-spinner id="dialog_loading_icon" class="loading-icon thick"></paper-spinner>
-        <paper-dialog id="paper_dialog" class="position"  modal>
+        <paper-dialog id="paper_dialog" class="position" modal>
             <p>Twój screen
-                <paper-button dialog-confirm on-click="closeImgDialog" autofocus>Prześlij</paper-button>
+                <paper-button dialog-confirm on-click="saveScreenshot" autofocus>Prześlij</paper-button>
 
             </p>
             <div on-click="addPin" class="image-wrapper">
@@ -54,8 +57,9 @@
                     <div class="attach-pin" style$="top:[[pin.y]]px;left:[[pin.x]]px"></div>
                 </template>
                 <img id="dialog_img"/></div>
-            <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj" confirm-button="Prześlij" on-confirm="confirm_pin" on-dismiss="dismiss_pin">
-               <paper-textarea label="Twój komentarz do pinezki..."></paper-textarea>
+            <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj"
+                                confirm-button="Prześlij" on-confirm="confirm_pin" on-dismiss="dismiss_pin">
+                <paper-textarea id="comment_textarea" label="Twój komentarz do pinezki..." ></paper-textarea>
             </paper-alert-dialog>
         </paper-dialog>
 
@@ -76,36 +80,60 @@
                     pinCoords: {
                         type: Array,
                         value: [],
-                        notify:true
+                        notify: true
                     }
                 };
             }
-            closeImgDialog(){
-                this.pinCoords.length=0;
+
+            saveScreenshot() {
+                const url = "http://localhost:3000/screenshots";
+                const body={
+                    title: Date.now(),
+                    comments :this.pinCoords
+                };
+                fetch(url, {
+                    body: JSON.stringify(body),
+                    headers: {
+                        'content-type' : 'application/json'
+                    },
+                    method : 'POST',
+                }).then(response => {
+                    console.log(response);
+                    return response.json()
+                });
+                this.pinCoords.length = 0;
                 this.$.attach_pin_template.render();
             }
+
             addPin(event) {
                 const positionTop = event.currentTarget.getBoundingClientRect().top;
                 const positionLeft = event.currentTarget.getBoundingClientRect().left;
                 this.$.comment_dialog.open();
 
-                this.push('pinCoords',{
+                this.push('pinCoords', {
                     x: event.clientX - positionLeft - padding + pinCorrection,
                     y: event.clientY - positionTop - pinCorrection
                 });
             }
-            confirm_pin(){
-                console.log(this.pinCoords[this.pinCoords.length-1]);
-            }
-            dismiss_pin(){
-                this.pinCoords.pop();
-                this.$.attach_pin_template.render();
-            }
-            SendRequest() {
-                const button = this.$.paper_button;
-                const loading_icon=this.$.dialog_loading_icon;
-                loading_icon.active=true;
 
+            confirm_pin() {
+                const pin = this.pinCoords[this.pinCoords.length - 1];
+                this.pinCoords.pop();
+                this.push('pinCoords', {
+                    x: pin.x,
+                    y: pin.y,
+                    description: this.$.comment_textarea.value
+                });
+                console.log(this.pinCoords);
+                this.$.comment_textarea.value="";
+            }
+
+            dismiss_pin() {
+                this.pop('pinCoords');
+            }
+
+            SendRequest() {
+                this.$.dialog_loading_icon.active=true;
                 const url = "http://localhost:3000/convert";
                 const data = {
                     url: window.location.href.toString()
@@ -120,7 +148,7 @@
                 }).then(response => {
                     return response.json()
                 }).then(data => {
-                    loading_icon.active=false;
+                    loading_icon.active = false;
                     this.$.paper_dialog.open();
                     this.$.dialog_img.src = data.data;
                     console.log(data)
