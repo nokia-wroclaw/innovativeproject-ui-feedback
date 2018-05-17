@@ -12,16 +12,16 @@ router.get('/', function (req, res) {
 	.catch(error => res.json({
 		error: true,
 		data: [],
-		error: error
 	}));
 });
 
 
 router.post('/', function (req, res) {
-	const {topic, description} = req.body;
+	const {x,y, description} = req.body;
 
 		model.Comment.create({
-			topic: topic,
+			x:x,
+			y:y,
 			description: description
 		})
 		.then(Comment => res.status(201).json({
@@ -32,7 +32,6 @@ router.post('/', function (req, res) {
 		.catch(error => res.json({
 			error: true,
 			data: [],
-			error: error
 		}));
 });
 
@@ -55,7 +54,6 @@ router.put('/:id', function (req, res) {
 	}))
 	.catch(error => res.json({
 		error: true,
-		error: error
 	}));
 });
 
@@ -74,7 +72,6 @@ router.delete('/:id', function (req, res) {
 	}))
 	.catch(error => res.json({
 		error: true,
-		error: error
 	}));
 });
 

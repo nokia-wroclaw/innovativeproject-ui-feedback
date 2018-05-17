@@ -18,25 +18,38 @@ router.get('/', function (req, res) {
 
 
 router.post('/', function (req, res) {
-    model.Screenshot.create({
-        title: req.body.title,
-        Comments: [{
-            x: req.body.Comment.x,
-            y: req.body.Comment.y,
-            description: req.body.Comment.description
-        }]
-    }, {
-        include: [model.Comment]
-    })
-        .then(Screenshot => res.status(201).json({
-            error: false,
-            data: Screenshot,
-            message: 'New Screenshot has been created.'
-        }))
-        .catch(error => res.json({
-            error: true,
-            data: [],
-        }));
+
+   return model.sequelize.transaction(t =>
+        model.Screenshot.create({
+            title: req.body.title,
+        }, {
+            transaction: t
+        })
+            .then(Screenshot => {
+                const comment_array = req.body.Comment.map(comment => (
+                    {
+                        ScreenshotId: Screenshot.id,
+                        x: comment.x,
+                        y: comment.y,
+                        description: comment.description
+                    }
+                ));
+                    return model.Comment.bulkCreate(comment_array, {transaction: t})
+                        .then(()=>res.status(201).json({
+                        error: false,
+                        data: Screenshot,
+                        message: 'New Screenshot has been created.'
+                    }))
+                        .catch(error => res.json({
+                            error: true,
+                            data: [],
+                        }));
+                }
+            )
+
+    )
+
+
 });
 
 
