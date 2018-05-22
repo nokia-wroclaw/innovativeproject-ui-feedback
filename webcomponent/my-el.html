@@ -7,6 +7,7 @@
 <link rel="import" href="bower_components/paper-alert-dialog/paper-alert-dialog.html">
 <link rel="import" href="bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="bower_components/paper-input/paper-input-behavior.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
 
 
 <dom-module id="my-el">
@@ -27,7 +28,7 @@
                 position: absolute;
                 height: 20px;
                 width: 20px;
-                background: red;
+                color: red;
             }
 
             .loading-icon {
@@ -54,7 +55,7 @@
             </p>
             <div on-click="addPin" class="image-wrapper">
                 <template id="attach_pin_template" is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
-                    <div class="attach-pin" style$="top:[[pin.y]]px;left:[[pin.x]]px"></div>
+                    <iron-icon class="attach-pin" icon="maps:add-location" style$="top:[[pin.y]]px;left:[[pin.x]]px"></iron-icon>
                 </template>
                 <img id="dialog_img"/></div>
             <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj"
