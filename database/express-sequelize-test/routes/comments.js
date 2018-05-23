@@ -5,14 +5,22 @@ const model = require('../models/index');
 
 router.get('/', function (req, res) {
   model.Comment.findAll({})
-	.then(comments => res.json({
-		error: false,
-		data: comments
-	}))
+	.then(comments => res.json(comments))
 	.catch(error => res.json({
-		error: true,
-		data: [],
+		error
 	}));
+});
+router.get('/:screenshotId', function (req, res) {
+	const screenshotId=req.params.screenshotId;
+    model.Comment.findAll({
+		where: {
+			ScreenshotId : screenshotId
+		}
+	})
+        .then(comments => res.json(comments))
+        .catch(error => res.json({
+            error
+        }));
 });
 
 

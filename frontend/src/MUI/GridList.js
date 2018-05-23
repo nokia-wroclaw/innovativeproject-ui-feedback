@@ -3,7 +3,7 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import ZoomInIcon from 'material-ui/svg-icons/action/zoom-in';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from 'material-ui/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
 
@@ -21,6 +21,7 @@ const styles = {
 };
 
 const url = "http://localhost:3000/screenshots";
+const commentsUrl = "http://localhost:3000/comments";
 const path = "http://localhost:3000/download";
 
 
@@ -28,15 +29,22 @@ export class ListExample extends Component {
     constructor() {
         super();
         this.state = {
-            paths: [],
+            screenshots: [],
             ImageDialog: {
-                open: true,
-                src: null
+                open: false,
+                src: null,
+                comments: []
             }
         };
     }
 
 
+    fetchComments(screenshotId) {
+        return fetch(`${commentsUrl}/${screenshotId}`)
+            .then((res) => {
+                return res.json()
+            });
+    }
 
     generate() {
         return fetch(url)
@@ -44,22 +52,29 @@ export class ListExample extends Component {
                 return res.json()
             })
             .then((data) => {
-                return data.map((img) => path + '/' + img.title + '.png');
+                return data.map((img) => ({
+                    path: path + '/' + img.title + '.png',
+                    id : img.id
+                }));
             });
     }
 
     componentDidMount() {
-        this.generate().then(paths => this.setState(() => ({'paths': paths})));
+        this.generate().then(screenshots => this.setState(() => ({screenshots})));
     }
 
-    showImage(image_src) {
-        this.setState({
-            ImageDialog:{
+    showImage(screenshot) {
+        this.fetchComments(screenshot.id).then(comments => this.setState({
+            ImageDialog: {
                 open: true,
-                src: image_src
+                src: screenshot.path,
+                comments
             }
-        });
+        }));
+
+
     }
+
     handleClose = () => {
         this.setState({
             ImageDialog: {
@@ -79,23 +94,23 @@ export class ListExample extends Component {
                         style={styles.gridList}
                     >
                         <Subheader>Obrazki</Subheader>
-                        {this.state.paths.map((tile) => (
+                        {this.state.screenshots.map((tile) => (
                             <GridTile
-                                key={tile}
+                                key={tile.id}
                                 title='website'
                                 subtitle={<span>by <b>some user</b></span>}
-                                actionIcon={<IconButton><ZoomInIcon onClick={(e) => this.showImage(tile, e)} color="white"/></IconButton>}>
-                                <img src={tile}/>
+                                actionIcon={<IconButton><ZoomInIcon onClick={() => this.showImage(tile)} color="white"/></IconButton>}>
+                                <img src={tile.path}/>
                             </GridTile>
                         ))}
                     </GridList>
                 </div>
                 <Dialog
                     open={this.state.ImageDialog.open}
-                    onClose={this.handleClose}>
-                    <DialogContent>
-                        Some content
-                    </DialogContent>
+                    modal={false}
+                    onRequestClose={this.handleClose}>
+                    <img src={this.state.ImageDialog.src}/>
+                    {console.log(this.state.ImageDialog.comments)}
 
                 </Dialog>
             </div>
