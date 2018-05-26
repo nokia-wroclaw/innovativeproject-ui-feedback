@@ -27,6 +27,7 @@ const styles = {
 const screenshotUrl = "http://localhost:3000/screenshots";
 const commentsUrl = "http://localhost:3000/comments";
 const downloadUrl = "http://localhost:3000/download";
+const responseUrl = "http://localhost:3000/responses";
 const pinCorrection = 10;
 
 
@@ -43,11 +44,17 @@ export class ListExample extends Component {
             FeedbackDialog: {
                 open: false,
                 id: null,
-                description: null,
+                description: "",
                 x: null,
                 y: null
+            },
+            ResponseText: {
+             description: "",
+             commentId: null
             }
         };
+        this.fetchResponse = this.fetchResponse.bind(this);
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
 
@@ -129,6 +136,24 @@ export class ListExample extends Component {
         });
     };
 
+
+    fetchResponse() {
+
+        console.log(this.state.ResponseText);
+        //work in progress
+    }
+
+    handleResponse(id,event, res) {
+        this.setState({
+            ResponseText: {
+                description: res,
+                commentId: id,
+            }
+        });
+    }
+
+
+
     componentDidMount() {
         this.fetchScreenshots().then(screenshots => this.setState(() => ({screenshots})));
     }
@@ -203,10 +228,15 @@ export class ListExample extends Component {
                 y:{this.state.FeedbackDialog.y}
                 <br/>
                 <TextField
+                    name="description"
                     hintText="Write response"
                     floatingLabelText="Response"
+                    onChange={(e) =>this.handleResponse(this.state.FeedbackDialog.id,e)}
                 />
                 <br/>
+                <div>
+                    <FlatButton onClick={this.fetchResponse} label="Submit" />
+                </div>
             </Dialog>
         </div>;
     }
