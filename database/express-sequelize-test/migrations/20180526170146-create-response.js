@@ -11,7 +11,7 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
-        ScreenshotId: {
+        commentId: {
             type: Sequelize.INTEGER,
             onDelete: 'CASCADE',
             references: {

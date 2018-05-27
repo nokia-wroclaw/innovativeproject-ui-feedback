@@ -25,10 +25,11 @@ router.get('/:commentId', function (req, res) {
 
 
 router.post('/', function (req, res) {
-    const {description} = req.body;
 
     model.Response.create({
-        description: description
+        description: req.body.description,
+        commentId: req.body.commentId
+
     })
         .then(Response => res.status(201).json({
             error: false,

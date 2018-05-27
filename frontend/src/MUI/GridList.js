@@ -7,8 +7,9 @@ import Dialog from 'material-ui/Dialog';
 import MapsPlace from 'material-ui/svg-icons/maps/place'
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {blue500} from 'material-ui/styles/colors';
-
+import {blue500, red500} from 'material-ui/styles/colors';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
 
 
 const styles = {
@@ -24,8 +25,9 @@ const styles = {
     }
 };
 
+
 const screenshotUrl = "http://localhost:3000/screenshots";
-const commentsUrl = "http://localhost:3000/comments";
+const commentUrl = "http://localhost:3000/comments";
 const downloadUrl = "http://localhost:3000/download";
 const responseUrl = "http://localhost:3000/responses";
 const pinCorrection = 10;
@@ -46,17 +48,16 @@ export class ListExample extends Component {
                 id: null,
                 description: "",
                 x: null,
-                y: null
+                y: null,
+                responses: []
             },
             ResponseText: {
              description: "",
              commentId: null
             }
         };
-        this.fetchResponse = this.fetchResponse.bind(this);
-        this.handleResponse = this.handleResponse.bind(this);
+        this.saveResponse = this.saveResponse.bind(this);
     }
-
 
 
     fetchScreenshots() {
@@ -68,13 +69,13 @@ export class ListExample extends Component {
                 return data.map((img) => ({
                     id: img.id,
                     path: downloadUrl + '/' + img.title + '.png'
-
                 }));
             });
     }
 
+
     fetchComments(screenshotId) {
-        return fetch(`${commentsUrl}/${screenshotId}`)
+        return fetch(`${commentUrl}/${screenshotId}`)
             .then((res) => {
                 return res.json()
             })
@@ -91,7 +92,40 @@ export class ListExample extends Component {
     }
 
 
-    showImage(screenshot) {
+    fetchResponses(commentId) {
+        return fetch(`${responseUrl}/${commentId}`)
+            .then((res) => {
+                return res.json()
+            })
+            .then((data) => {
+                return data.map((response) => ({
+                    id: response.id,
+                    description: response.description,
+                    commentId: response.commentId
+
+                }));
+            });
+    }
+
+
+    saveResponse() {
+        fetch(responseUrl, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                description: this.state.ResponseText.description,
+                commentId: this.state.ResponseText.commentId
+            }),
+        }).then(response => {
+            console.log(response);
+            return response.json()
+        });
+    }
+
+
+    showScreenshot(screenshot) {
         this.fetchComments(screenshot.id).then(comments => this.setState({
             ImageDialog: {
                 open: true,
@@ -101,7 +135,22 @@ export class ListExample extends Component {
         }));
     }
 
-    handleCloseImage = () => {
+
+    showComment(comment) {
+        this.fetchResponses(comment.id).then(responses =>this.setState({
+            FeedbackDialog: {
+                open: true,
+                id: comment.id,
+                description: comment.description,
+                x: comment.x,
+                y: comment.y,
+                responses:responses
+            }
+        }));
+    }
+
+
+    handleCloseScreenshot = () => {
         this.setState({
             ImageDialog: {
                 open: false,
@@ -112,18 +161,6 @@ export class ListExample extends Component {
     };
 
 
-    showFeedback(feedback) {
-        this.setState({
-            FeedbackDialog: {
-                open: true,
-                id: feedback.id,
-                description: feedback.description,
-                x: feedback.x,
-                y: feedback.y
-            }
-        });
-    }
-
     handleCloseFeedback = () => {
         this.setState({
             FeedbackDialog: {
@@ -131,46 +168,29 @@ export class ListExample extends Component {
                 id: null,
                 description: null,
                 x: null,
-                y: null
+                y: null,
+                responses:[]
             }
         });
     };
 
 
-    fetchResponse() {
-
-        console.log(this.state.ResponseText);
-        //work in progress
-    }
-
-    handleResponse(id,event, res) {
+    handleResponse(id,event) {
         this.setState({
             ResponseText: {
-                description: res,
+                description: event.target.value,
                 commentId: id,
             }
         });
     }
 
 
-
     componentDidMount() {
         this.fetchScreenshots().then(screenshots => this.setState(() => ({screenshots})));
     }
 
+
     render() {
-        const feedbackActions = [
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onClick={this.handleCloseFeedback}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                onClick={this.handleCloseFeedback}
-            />,
-        ];
 
         return <div>
             <div style={styles.root}>
@@ -180,15 +200,15 @@ export class ListExample extends Component {
                     style={styles.gridList}>
 
                     <Subheader>Screenshots</Subheader>
-                    {this.state.screenshots.map((tile) => (
+                    {this.state.screenshots.map((obj) => (
                         <GridTile
-                            key={tile.id}
+                            key={obj.id}
                             title='website'
                             subtitle={<span>by <b>some user</b></span>}
                             actionIcon={<IconButton><ZoomInIcon color="white" onClick={() =>
-                                this.showImage(tile)}
+                                this.showScreenshot(obj)}
                             /></IconButton>}>
-                    <img src={tile.path}/>
+                    <img src={obj.path}/>
                         </GridTile>
                     ))}
                 </GridList>
@@ -196,8 +216,7 @@ export class ListExample extends Component {
             <Dialog
                 open={this.state.ImageDialog.open}
                 modal={false}
-                onRequestClose={this.handleCloseImage}>
-
+                onRequestClose={this.handleCloseScreenshot}>
                 <div>
                     <img src={this.state.ImageDialog.src}/>
                         {this.state.ImageDialog.comments.map((obj) => (
@@ -209,34 +228,55 @@ export class ListExample extends Component {
                                 position:'absolute',
                                 }}>
                             <IconButton><MapsPlace color={blue500} onClick={() => {
-                            this.showFeedback(obj)
+                            this.showComment(obj)
                         }}/></IconButton>
                             </div>))}
                 </div>
             </Dialog>
             <Dialog open={this.state.FeedbackDialog.open}
                     modal={false}
-                    actions={feedbackActions}>
-                Feedback:
-                <br/>
-                {this.state.FeedbackDialog.description}
-                <br/>
-                id:{this.state.FeedbackDialog.id}
-                <br/>
-                x:{this.state.FeedbackDialog.x}
-                <br/>
-                y:{this.state.FeedbackDialog.y}
-                <br/>
+                    autoScrollBodyContent={true}
+                    actions={
+                        <FlatButton
+                            label="Done"
+                            primary={true}
+                            onClick={this.handleCloseFeedback}
+                        />
+                    }>
+                <Card>
+                    <CardHeader
+                        title="Feedback"
+                    />
+                    <CardText color={red500}>
+                        Comment:{this.state.FeedbackDialog.description}
+                        <br/>
+                        commentId:{this.state.FeedbackDialog.id}
+                        <br/>
+                        x:{this.state.FeedbackDialog.x}
+                        <br/>
+                        y:{this.state.FeedbackDialog.y}
+                    </CardText>
+                </Card>
                 <TextField
-                    name="description"
                     hintText="Write response"
                     floatingLabelText="Response"
                     onChange={(e) =>this.handleResponse(this.state.FeedbackDialog.id,e)}
                 />
                 <br/>
                 <div>
-                    <FlatButton onClick={this.fetchResponse} label="Submit" />
+                    <RaisedButton onClick={this.saveResponse} label="Submit" primary={true}  />
                 </div>
+                <br/>
+                {this.state.FeedbackDialog.responses.map((obj) => (
+                   <Card>
+                    <CardHeader
+                    title={'Response '+ obj.id}
+                    />
+                    <CardText color={blue500}>
+                        {obj.description}
+                    </CardText>
+                    </Card>
+                    ))}
             </Dialog>
         </div>;
     }
