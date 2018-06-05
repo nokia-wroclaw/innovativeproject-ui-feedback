@@ -225,6 +225,7 @@ export class ListExample extends Component {
             <Dialog
                 open={this.state.ImageDialog.open}
                 modal={false}
+                autoScrollBodyContent={true}
                 onRequestClose={this.handleCloseScreenshot}>
                 <div style={{
                     position:'relative'
