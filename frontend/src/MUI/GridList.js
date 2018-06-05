@@ -108,7 +108,16 @@ export class ListExample extends Component {
     }
 
 
-    saveResponse() {
+    saveResponse(event) {
+        event.preventDefault();
+        this.setState((prevState)=>({
+            FeedbackDialog :{
+                ...prevState.FeedbackDialog,
+                responses : [...prevState.FeedbackDialog.responses,prevState.ResponseText]
+            }
+        }));
+        console.log(event.currentTarget);
+        event.currentTarget.parentElement.scrollTo(0,window.clientHeight);
         fetch(responseUrl, {
             method: 'POST',
             headers: {
@@ -217,7 +226,9 @@ export class ListExample extends Component {
                 open={this.state.ImageDialog.open}
                 modal={false}
                 onRequestClose={this.handleCloseScreenshot}>
-                <div>
+                <div style={{
+                    position:'relative'
+                }}>
                     <img src={this.state.ImageDialog.src}/>
                         {this.state.ImageDialog.comments.map((obj) => (
                             <div style={{
@@ -236,6 +247,7 @@ export class ListExample extends Component {
             <Dialog open={this.state.FeedbackDialog.open}
                     modal={false}
                     autoScrollBodyContent={true}
+                    ref = {"FeedbackDialog"}
                     actions={
                         <FlatButton
                             label="Done"
