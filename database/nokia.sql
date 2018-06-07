@@ -61,7 +61,7 @@ CREATE TABLE `sequelizemeta` (
 
 INSERT INTO `sequelizemeta` (`name`) VALUES
 ('20180320082932-create-user.js'),
-('20180320083016-create-comment.js');
+('20180516083016-create-comment.js');
 
 -- --------------------------------------------------------
 

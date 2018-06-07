@@ -4,6 +4,13 @@
 <link rel="import" href="bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-alert-dialog/paper-alert-dialog.html">
+<link rel="import" href="bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="bower_components/paper-input/paper-input-behavior.html">
+<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+
+
 
 <dom-module id="my-el">
     <template>
@@ -23,18 +30,27 @@
                 position: absolute;
                 height: 20px;
                 width: 20px;
-                background: red;
+                color: red;
             }
-            .loading-icon{
+
+            .loading-icon {
                 position: absolute;
                 top: 50%;
                 left: 50%;
             }
+
             paper-spinner.thick {
                 --paper-spinner-stroke-width: 4px;
             }
+            paper-spinner{
+                z-index: 10000000;
+            }
+
             paper-dialog.position {
                 position: fixed;
+            }
+            paper-dialog {
+                overflow : scroll;
             }
         </style>
 
@@ -42,13 +58,21 @@
         <paper-spinner id="dialog_loading_icon" class="loading-icon thick"></paper-spinner>
         <paper-dialog id="paper_dialog" class="position" modal>
             <p>Twój screen
-                <paper-button dialog-confirm autofocus>Prześlij</paper-button>
+                <paper-button dialog-confirm on-click="saveScreenshot" autofocus>Prześlij</paper-button>
+
             </p>
             <div on-click="addPin" class="image-wrapper">
-                <template is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
-                    <div class="attach-pin" style$="top:[[pin.y]]px;left:[[pin.x]]px"></div>
+
+                <template id="attach_pin_template" is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
+                    <iron-icon class="attach-pin" icon="maps:add-location" style$="top:[[pin.y]]px;left:[[pin.x]]px"></iron-icon>
                 </template>
-                <img id="dialog_img"/></div>
+
+                <div><img id="dialog_img"/></div>
+                </div>
+            <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj"
+                                confirm-button="Prześlij" on-confirm="confirm_pin" on-dismiss="dismiss_pin">
+                <paper-textarea id="comment_textarea" label="Twój komentarz do pinezki..."></paper-textarea>
+            </paper-alert-dialog>
         </paper-dialog>
 
 
@@ -68,27 +92,63 @@
                     pinCoords: {
                         type: Array,
                         value: [],
-                        notify:true
+                        notify: true
                     }
                 };
+            }
+
+            saveScreenshot() {
+                const url = "http://localhost:3000/screenshots";
+                const img_src = this.$.dialog_img.src;
+                const title = img_src.substring(img_src.lastIndexOf("/") + 1, img_src.length - 4);
+                const body = {
+                    title: title,
+                    comments: this.pinCoords
+                };
+                fetch(url, {
+                    body: JSON.stringify(body),
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                }).then(response => {
+                    console.log(response);
+                    return response.json()
+                });
+                this.pinCoords.length = 0;
+                this.$.attach_pin_template.render();
             }
 
             addPin(event) {
                 const positionTop = event.currentTarget.getBoundingClientRect().top;
                 const positionLeft = event.currentTarget.getBoundingClientRect().left;
+                this.$.comment_dialog.open();
 
-
-                this.push('pinCoords',{
+                this.push('pinCoords', {
                     x: event.clientX - positionLeft - padding + pinCorrection,
                     y: event.clientY - positionTop - pinCorrection
                 });
             }
 
-            SendRequest() {
-                const button = this.$.paper_button;
-                const loading_icon=this.$.dialog_loading_icon;
-                loading_icon.active=true;
+            confirm_pin() {
+                const pin = this.pinCoords[this.pinCoords.length - 1];
+                this.pinCoords.pop();
+                this.push('pinCoords', {
+                    x: pin.x,
+                    y: pin.y,
+                    description: this.$.comment_textarea.value
+                });
+                console.log(this.pinCoords);
+                this.$.comment_textarea.value = "";
+            }
 
+            dismiss_pin() {
+                this.pop('pinCoords');
+            }
+
+            SendRequest() {
+                const loading_icon = this.$.dialog_loading_icon;
+                loading_icon.active = true;
                 const url = "http://localhost:3000/convert";
                 const data = {
                     url: window.location.href.toString()
@@ -103,7 +163,7 @@
                 }).then(response => {
                     return response.json()
                 }).then(data => {
-                    loading_icon.active=false;
+                    loading_icon.active = false;
                     this.$.paper_dialog.open();
                     this.$.dialog_img.src = data.data;
                     console.log(data)

@@ -13,12 +13,13 @@ convert.post('/', async function (req, res) {
 		const browser = await puppeteer.launch();
 		const title = Date.now();
 		const page = await browser.newPage();
+		page.setViewport({
+			width : 1920,
+			height : 1080
+		});
 		await page.goto(req.body.url, {waitUntil: "networkidle2"});
 		await page.screenshot({path: 'public/' + title + '.png', fullPage: true});
 		await browser.close();
-		screenshot = await model.Screenshot.create({
-			title
-		});
 		await res.send(201, {
 			error: false,
 			data: `${config.routes.backend.host}:${config.routes.backend.port}/download/${title}.png`,
