@@ -1,11 +1,16 @@
 {
   "development": {
+    "define": {
+      "charset": "utf8",
+      "collate": "utf8_general_ci"
+    },
     "username": "andrzej",
     "password": "sagan",
     "database": "nokia",
     "host": "localhost",
-    "port":3307,
+    "port": 3307,
     "dialect": "mysql",
+
     "routes": {
       "polymer": {
         "host": "http://localhost",

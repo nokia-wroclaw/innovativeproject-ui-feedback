@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     const Comment = sequelize.define('Comment', {
         x: DataTypes.DOUBLE,
         y: DataTypes.DOUBLE,
-        description: DataTypes.STRING
+        description: DataTypes.STRING + 'CHARSET utf8 COLLATE utf8_polish_ci'
     }, {});
     Comment.associate = function (models) {
 

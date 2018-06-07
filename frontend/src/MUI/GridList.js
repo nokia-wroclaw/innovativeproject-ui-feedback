@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog';
 import MapsPlace from 'material-ui/svg-icons/maps/place'
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {blue500, red500} from 'material-ui/styles/colors';
+import {blue500, red500, purple900} from 'material-ui/styles/colors';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -22,7 +22,21 @@ const styles = {
         width: 1200,
         height: 450,
         overflowY: 'auto',
+    },
+    responseCards: {
+        overflowY: 'auto',
+        height: 400
+    },
+    imageDialog: {
+        width : "100vw",
+        maxWidth:"100%"
+    },
+    pinIconButton:{
+        padding : 0,
+        width : 20,
+        height : 20
     }
+
 };
 
 
@@ -52,9 +66,10 @@ export class ListExample extends Component {
                 responses: []
             },
             ResponseText: {
-             description: "",
-             commentId: null
+                description: "",
+                commentId: null
             }
+
         };
         this.saveResponse = this.saveResponse.bind(this);
     }
@@ -110,14 +125,14 @@ export class ListExample extends Component {
 
     saveResponse(event) {
         event.preventDefault();
-        this.setState((prevState)=>({
-            FeedbackDialog :{
+        this.setState((prevState) => ({
+            FeedbackDialog: {
                 ...prevState.FeedbackDialog,
-                responses : [...prevState.FeedbackDialog.responses,prevState.ResponseText]
+                responses: [...prevState.FeedbackDialog.responses, prevState.ResponseText]
             }
         }));
         console.log(event.currentTarget);
-        event.currentTarget.parentElement.scrollTo(0,window.clientHeight);
+        event.currentTarget.parentElement.scrollTo(0, window.clientHeight);
         fetch(responseUrl, {
             method: 'POST',
             headers: {
@@ -131,6 +146,11 @@ export class ListExample extends Component {
             console.log(response);
             return response.json()
         });
+        this.setState({
+            ResponseText: {
+                description: ""
+            }
+        })
     }
 
 
@@ -146,14 +166,14 @@ export class ListExample extends Component {
 
 
     showComment(comment) {
-        this.fetchResponses(comment.id).then(responses =>this.setState({
+        this.fetchResponses(comment.id).then(responses => this.setState({
             FeedbackDialog: {
                 open: true,
                 id: comment.id,
                 description: comment.description,
                 x: comment.x,
                 y: comment.y,
-                responses:responses
+                responses: responses
             }
         }));
     }
@@ -178,13 +198,13 @@ export class ListExample extends Component {
                 description: null,
                 x: null,
                 y: null,
-                responses:[]
+                responses: []
             }
         });
     };
 
 
-    handleResponse(id,event) {
+    handleResponse(id, event) {
         this.setState({
             ResponseText: {
                 description: event.target.value,
@@ -217,7 +237,7 @@ export class ListExample extends Component {
                             actionIcon={<IconButton><ZoomInIcon color="white" onClick={() =>
                                 this.showScreenshot(obj)}
                             /></IconButton>}>
-                    <img src={obj.path}/>
+                            <img src={obj.path}/>
                         </GridTile>
                     ))}
                 </GridList>
@@ -226,29 +246,29 @@ export class ListExample extends Component {
                 open={this.state.ImageDialog.open}
                 modal={false}
                 autoScrollBodyContent={true}
-                onRequestClose={this.handleCloseScreenshot}>
+                onRequestClose={this.handleCloseScreenshot}
+                contentStyle={styles.imageDialog}>
                 <div style={{
-                    position:'relative'
+                    position: 'relative'
                 }}>
                     <img src={this.state.ImageDialog.src}/>
-                        {this.state.ImageDialog.comments.map((obj) => (
-                            <div style={{
-                                top: obj.y+'px',
-                                left: obj.x-pinCorrection+'px',
-                                width:'20px',
-                                height:'20px',
-                                position:'absolute',
-                                }}>
-                            <IconButton><MapsPlace color={blue500} onClick={() => {
-                            this.showComment(obj)
-                        }}/></IconButton>
-                            </div>))}
+                    {this.state.ImageDialog.comments.map((obj) => (
+                        <div style={{
+                            top: obj.y - pinCorrection + 'px',
+                            left: obj.x - 24 + 'px',
+                            width: '20px',
+                            height: '20px',
+                            position: 'absolute',
+                        }}>
+                            <IconButton style={styles.pinIconButton}><MapsPlace  color={blue500} onClick={() => {
+                                this.showComment(obj)
+                            }}/></IconButton>
+                        </div>))}
                 </div>
             </Dialog>
             <Dialog open={this.state.FeedbackDialog.open}
                     modal={false}
-                    autoScrollBodyContent={true}
-                    ref = {"FeedbackDialog"}
+                    ref={"FeedbackDialog"}
                     actions={
                         <FlatButton
                             label="Done"
@@ -260,36 +280,30 @@ export class ListExample extends Component {
                     <CardHeader
                         title="Feedback"
                     />
-                    <CardText color={red500}>
-                        Comment:{this.state.FeedbackDialog.description}
-                        <br/>
-                        commentId:{this.state.FeedbackDialog.id}
-                        <br/>
-                        x:{this.state.FeedbackDialog.x}
-                        <br/>
-                        y:{this.state.FeedbackDialog.y}
+                    <CardText color={purple900}>
+                        Comment: {this.state.FeedbackDialog.description}
                     </CardText>
                 </Card>
                 <TextField
                     hintText="Write response"
                     floatingLabelText="Response"
-                    onChange={(e) =>this.handleResponse(this.state.FeedbackDialog.id,e)}
+                    onChange={(e) => this.handleResponse(this.state.FeedbackDialog.id, e)}
+                    value={this.state.ResponseText.description}
                 />
                 <br/>
                 <div>
-                    <RaisedButton onClick={this.saveResponse} label="Submit" primary={true}  />
+                    <RaisedButton onClick={this.saveResponse} label="Submit" primary={true}/>
                 </div>
                 <br/>
-                {this.state.FeedbackDialog.responses.map((obj) => (
-                   <Card>
-                    <CardHeader
-                    title={'Response '+ obj.id}
-                    />
-                    <CardText color={blue500}>
-                        {obj.description}
-                    </CardText>
-                    </Card>
+                <div style={styles.responseCards}>
+                    {this.state.FeedbackDialog.responses.map((obj) => (
+                        <Card>
+                            <CardText color={blue500}>
+                                {obj.description}
+                            </CardText>
+                        </Card>
                     ))}
+                </div>
             </Dialog>
         </div>;
     }
