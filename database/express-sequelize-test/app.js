@@ -9,6 +9,7 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 const comments = require('./routes/comments');
 const screenshots = require('./routes/screenshots');
+const responses = require ('./routes/responses');
 const convertsRouter  = require('./routes/convert');
 
 const app = express();
@@ -31,7 +32,7 @@ app.use('/users', users);
 app.use('/comments', comments);
 app.use('/convert', convertsRouter);
 app.use('/screenshots', screenshots);
-
+app.use('/responses', responses);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

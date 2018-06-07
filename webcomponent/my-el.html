@@ -7,7 +7,9 @@
 <link rel="import" href="bower_components/paper-alert-dialog/paper-alert-dialog.html">
 <link rel="import" href="bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="bower_components/paper-input/paper-input-behavior.html">
+<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="bower_components/iron-icons/maps-icons.html">
+
 
 
 <dom-module id="my-el">
@@ -40,9 +42,15 @@
             paper-spinner.thick {
                 --paper-spinner-stroke-width: 4px;
             }
+            paper-spinner{
+                z-index: 10000000;
+            }
 
             paper-dialog.position {
                 position: fixed;
+            }
+            paper-dialog {
+                overflow : scroll;
             }
         </style>
 
@@ -54,10 +62,13 @@
 
             </p>
             <div on-click="addPin" class="image-wrapper">
+
                 <template id="attach_pin_template" is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
                     <iron-icon class="attach-pin" icon="maps:add-location" style$="top:[[pin.y]]px;left:[[pin.x]]px"></iron-icon>
                 </template>
-                <img id="dialog_img"/></div>
+
+                <div><img id="dialog_img"/></div>
+                </div>
             <paper-alert-dialog id="comment_dialog" title="Dodaj komentarz do pinezki" dismiss-button="Anuluj"
                                 confirm-button="Prześlij" on-confirm="confirm_pin" on-dismiss="dismiss_pin">
                 <paper-textarea id="comment_textarea" label="Twój komentarz do pinezki..."></paper-textarea>
