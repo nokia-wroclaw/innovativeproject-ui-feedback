@@ -62,7 +62,7 @@ polymer serve
 ```
 cd frontend
 npm install
-cd ..example_html2
+cd ../example_html2
 npm install
 ```
 **To run frontend (in frontend directory):**
