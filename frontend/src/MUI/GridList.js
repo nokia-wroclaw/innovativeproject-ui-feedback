@@ -232,8 +232,8 @@ export class ListExample extends Component {
                     {this.state.screenshots.map((obj) => (
                         <GridTile
                             key={obj.id}
-                            title='website'
-                            subtitle={<span>by <b>some user</b></span>}
+                            title=' '
+
                             actionIcon={<IconButton><ZoomInIcon color="white" onClick={() =>
                                 this.showScreenshot(obj)}
                             /></IconButton>}>
