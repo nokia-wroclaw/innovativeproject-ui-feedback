@@ -1,7 +1,7 @@
 # Innovativeproject- UI Issue Feedback
-##Goal
+## Goal
 The goal of this project is to create an importable webcomponent, that would provide a tool for sending feedback about visual aspects of website.
-##Description
+## Description
 This project consists of :
 * Backend that is the "brain" of whole project
 * Database that stores all the data
@@ -9,12 +9,12 @@ This project consists of :
 * Frontend that shows results of sent feedback
 
 Moreover you will need some example site with this webcomponent imported. We have created two example htmls.  
-##Installation
+## Installation
 Clone repository from github
 ```
 git clone https://github.com/nokia-wroclaw/innovativeproject-ui-feedback.git
 ```
-###Backend and Database
+### Backend and Database
 **Prerequisites:**
 * [Npm](https://www.npmjs.com/)
 * [Sequelize-cli](http://docs.sequelizejs.com/)
@@ -39,7 +39,7 @@ npm install
 npm start
 ```
 
-###Webcomponent
+### Webcomponent
 **Prerequisites:**
 * [Polymer](https://www.polymer-project.org/)
 * [Bower](https://bower.io/)
@@ -54,7 +54,7 @@ bower install
 polymer serve
 ```
 
-###Frontend and example website
+### Frontend and example website
 **Prerequisites:**
 * [Npm](https://www.npmjs.com/)
 
@@ -73,12 +73,12 @@ npm start
 ```
 npm start
 ```
-##Technologies
+## Technologies
 |Backend|Database|Webcomponent|Frontend|
 | ---   | ---    | ----       | ---    |
 |[NodeJS](https://nodejs.org/en/) |[MySQL](https://www.mysql.com/)|[Polymer](https://www.polymer-project.org/)|[React](https://reactjs.org/)
 |[ExpressJs](https://expressjs.com/)| | | |
-##Authors
+## Authors
 * Jacek Kubiak
 * Jakub Piotrowski
 * Andrzej Sagan
