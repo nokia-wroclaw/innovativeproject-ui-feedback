@@ -17,26 +17,21 @@ router.get('/', function (req, res) {
 
 
 router.post('/', function (req, res) {
-	const {
-		name,
-		team,
-		email
-	} = req.body;
-	model.User.create({
-		name: name,
-		team: team,
-		email: email
-	})
-	.then(User => res.status(201).json({
-		error: false,
-		data: User,
-		message: 'New User has been created.'
-	}))
-	.catch(error => res.json({
-		error: true,
-		data: [],
-		error: error
-	}));
+
+    model.User.find({
+        where: {
+            username: req.body.username,
+            password: req.body.password
+        }
+    }).then(function (data) {
+    	if(!data) {
+            res.sendStatus(401)
+        }
+        else {
+    		res.sendStatus(201)
+		}
+    })
+
 });
 
 

@@ -7,7 +7,8 @@ import Dialog from 'material-ui/Dialog';
 import MapsPlace from 'material-ui/svg-icons/maps/place'
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {blue500, red500, purple900} from 'material-ui/styles/colors';
+import Snackbar from 'material-ui/Snackbar';
+import {blue500,purple900} from 'material-ui/styles/colors';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -44,6 +45,7 @@ const screenshotUrl = "http://localhost:3000/screenshots";
 const commentUrl = "http://localhost:3000/comments";
 const downloadUrl = "http://localhost:3000/download";
 const responseUrl = "http://localhost:3000/responses";
+const loginUrl ="http://localhost:3000/users";
 const pinCorrection = 10;
 
 
@@ -67,10 +69,19 @@ export class ListExample extends Component {
             },
             ResponseText: {
                 description: "",
-                commentId: null
+                commentId: null,
+                author: ""
+            },
+            LoginDialog: {
+                open:true,
+                username: "",
+                password: "",
+                openSnackbar:false
+
             }
 
         };
+        this.handleLogin = this.handleLogin.bind(this);
         this.saveResponse = this.saveResponse.bind(this);
     }
 
@@ -209,8 +220,67 @@ export class ListExample extends Component {
             ResponseText: {
                 description: event.target.value,
                 commentId: id,
+                author: this.state.LoginDialog.username
             }
         });
+    }
+
+    handleUsername(event) {
+        this.setState({
+            LoginDialog: {
+                username: event.target.value,
+                open: true
+            }
+        });
+    }
+
+    handlePassword(e) {
+
+      e.preventDefault();
+        this.setState((prevState) => {
+            return ({
+                LoginDialog: {
+                    ...prevState.LoginDialog,
+                    username: prevState.LoginDialog.username,
+                    password: this.refs.passwordField.getValue(),
+                    open: true
+                }
+            });
+        })};
+
+
+    handleLogin(){
+
+        fetch(loginUrl, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: this.state.LoginDialog.username,
+                password: this.state.LoginDialog.password
+            }),
+        }).then(response => {
+           if(response.status == 201)
+           {
+               this.setState({
+                   LoginDialog:{
+                       open:false
+                   }
+               })
+           }
+           if(response.status ==401)
+           {
+              /* this.setState({
+                   LoginDialog:{
+                       open:true,
+                       openSnackbar:true
+                   }
+               })*/
+           }
+        });
+
+
     }
 
 
@@ -222,6 +292,34 @@ export class ListExample extends Component {
     render() {
 
         return <div>
+
+
+            <Dialog
+                open={this.state.LoginDialog.open}
+                modal={true}>
+
+                <TextField
+
+                    hintText="Write username"
+                    floatingLabelText="Username"
+                    onChange={(e) => this.handleUsername(e)}
+                />
+                <br/>
+                <TextField ref="passwordField"
+                    hintText="Write password"
+                    floatingLabelText="Password"
+                    type="password"
+                    onChange={(e) => this.handlePassword(e)}
+                />
+                <br/>
+                <RaisedButton onClick={this.handleLogin} label="Sign in" primary={true}/>
+            </Dialog>
+            <Snackbar
+                open={this.state.LoginDialog.openSnackbar}
+                autoHideDuration={4000}
+                message="Wrong username or password!"
+            />
+
             <div style={styles.root}>
                 <GridList
                     cellHeight={180}
@@ -300,6 +398,7 @@ export class ListExample extends Component {
                         <Card>
                             <CardText color={blue500}>
                                 {obj.description}
+                                {obj.author}
                             </CardText>
                         </Card>
                     ))}
