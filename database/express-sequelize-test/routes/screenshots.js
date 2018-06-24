@@ -30,7 +30,9 @@ router.post('/', function (req, res) {
                         ScreenshotId: Screenshot.id,
                         x: comment.x,
                         y: comment.y,
-                        description: comment.description
+                        description: comment.description,
+                        author: comment.author
+
                     }
                 ));
                     return model.Comment.bulkCreate(comment_array, {transaction: t})

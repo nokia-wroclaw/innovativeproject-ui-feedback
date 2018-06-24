@@ -32,6 +32,9 @@ const styles = {
         width : "100vw",
         maxWidth:"100%"
     },
+    loginDialog:{
+        width: "25vw"
+    },
     pinIconButton:{
         padding : 0,
         width : 20,
@@ -41,13 +44,15 @@ const styles = {
 };
 
 
+
+
 const screenshotUrl = "http://localhost:3000/screenshots";
 const commentUrl = "http://localhost:3000/comments";
 const downloadUrl = "http://localhost:3000/download";
 const responseUrl = "http://localhost:3000/responses";
 const loginUrl ="http://localhost:3000/users";
 const pinCorrection = 10;
-
+let tmpAuthor;
 
 export class ListExample extends Component {
     constructor() {
@@ -63,14 +68,16 @@ export class ListExample extends Component {
                 open: false,
                 id: null,
                 description: "",
+                author:"",
                 x: null,
                 y: null,
                 responses: []
             },
             ResponseText: {
                 description: "",
-                commentId: null,
-                author: ""
+                author:"",
+                commentId: null
+
             },
             LoginDialog: {
                 open:true,
@@ -111,6 +118,7 @@ export class ListExample extends Component {
                     x: comment.x,
                     y: comment.y,
                     description: comment.description,
+                    author: comment.author,
                     screenshotId: comment.ScreenshotId
 
                 }));
@@ -127,6 +135,7 @@ export class ListExample extends Component {
                 return data.map((response) => ({
                     id: response.id,
                     description: response.description,
+                    author: response.author,
                     commentId: response.commentId
 
                 }));
@@ -151,6 +160,7 @@ export class ListExample extends Component {
             },
             body: JSON.stringify({
                 description: this.state.ResponseText.description,
+                author: tmpAuthor,
                 commentId: this.state.ResponseText.commentId
             }),
         }).then(response => {
@@ -159,7 +169,8 @@ export class ListExample extends Component {
         });
         this.setState({
             ResponseText: {
-                description: ""
+                description: "",
+                author: ""
             }
         })
     }
@@ -171,7 +182,7 @@ export class ListExample extends Component {
                 open: true,
                 src: screenshot.path,
                 comments: comments
-            },
+            }
         }));
     }
 
@@ -182,10 +193,12 @@ export class ListExample extends Component {
                 open: true,
                 id: comment.id,
                 description: comment.description,
+                author: comment.author,
                 x: comment.x,
                 y: comment.y,
                 responses: responses
-            }
+            },
+
         }));
     }
 
@@ -216,11 +229,13 @@ export class ListExample extends Component {
 
 
     handleResponse(id, event) {
+
         this.setState({
             ResponseText: {
                 description: event.target.value,
+                author: tmpAuthor,
                 commentId: id,
-                author: this.state.LoginDialog.username
+
             }
         });
     }
@@ -250,7 +265,7 @@ export class ListExample extends Component {
 
 
     handleLogin(){
-
+        tmpAuthor = this.state.LoginDialog.username;
         fetch(loginUrl, {
             method: 'POST',
             headers: {
@@ -271,12 +286,12 @@ export class ListExample extends Component {
            }
            if(response.status ==401)
            {
-              /* this.setState({
+               this.setState({
                    LoginDialog:{
                        open:true,
                        openSnackbar:true
                    }
-               })*/
+               })
            }
         });
 
@@ -296,17 +311,17 @@ export class ListExample extends Component {
 
             <Dialog
                 open={this.state.LoginDialog.open}
-                modal={true}>
+                modal={true}
+                contentStyle={styles.loginDialog}>
 
                 <TextField
-
-                    hintText="Write username"
+                    hintText="Enter username"
                     floatingLabelText="Username"
                     onChange={(e) => this.handleUsername(e)}
                 />
                 <br/>
                 <TextField ref="passwordField"
-                    hintText="Write password"
+                    hintText="Enter password"
                     floatingLabelText="Password"
                     type="password"
                     onChange={(e) => this.handlePassword(e)}
@@ -367,6 +382,7 @@ export class ListExample extends Component {
             <Dialog open={this.state.FeedbackDialog.open}
                     modal={false}
                     ref={"FeedbackDialog"}
+                    autoScrollBodyContent={true}
                     actions={
                         <FlatButton
                             label="Done"
@@ -380,6 +396,8 @@ export class ListExample extends Component {
                     />
                     <CardText color={purple900}>
                         Comment: {this.state.FeedbackDialog.description}
+                        <br/>
+                        Author {this.state.FeedbackDialog.author}
                     </CardText>
                 </Card>
                 <TextField
@@ -398,8 +416,10 @@ export class ListExample extends Component {
                         <Card>
                             <CardText color={blue500}>
                                 {obj.description}
-                                {obj.author}
+                                <br/>
+                                Author: {obj.author}
                             </CardText>
+
                         </Card>
                     ))}
                 </div>

@@ -11,6 +11,9 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
+        author: {
+            type: Sequelize.STRING
+        },
         commentId: {
             type: Sequelize.INTEGER,
             onDelete: 'CASCADE',

@@ -25,12 +25,13 @@ router.get('/:screenshotId', function (req, res) {
 
 
 router.post('/', function (req, res) {
-    const {x, y, description} = req.body;
+    const {x, y, description, author} = req.body;
 
     model.Comment.create({
         x: x,
         y: y,
-        description: description
+        description: description,
+        author: author
     })
         .then(Comment => res.status(201).json({
             error: false,

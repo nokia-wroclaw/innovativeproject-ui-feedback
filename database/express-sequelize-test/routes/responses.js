@@ -28,6 +28,7 @@ router.post('/', function (req, res) {
 
     model.Response.create({
         description: req.body.description,
+        author: req.body.author,
         commentId: req.body.commentId
 
     })

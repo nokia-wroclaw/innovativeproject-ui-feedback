@@ -2,7 +2,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Response = sequelize.define('Response', {
 
-    description: DataTypes.STRING
+    description: DataTypes.STRING,
+      author: DataTypes.STRING
   }, {});
   Response.associate = function(models) {
 

@@ -17,6 +17,9 @@ module.exports = {
             description: {
                 type: Sequelize.STRING
             },
+            author: {
+                type: Sequelize.STRING
+            },
             ScreenshotId: {
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',

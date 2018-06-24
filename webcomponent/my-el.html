@@ -1,0 +1,218 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-alert-dialog/paper-alert-dialog.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-input/paper-input-behavior.html">
+<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+
+
+
+<dom-module id="my-el">
+    <template>
+
+        <style>
+            paper-fab.blue {
+                --paper-fab-background: var(--paper-light-blue-500);
+                --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+            }
+
+            .image-wrapper {
+                padding: 0 20px;
+                position: relative;
+            }
+
+            .attach-pin {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                color : #2196f3;
+            }
+
+            .loading-icon {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+            }
+
+            paper-spinner.thick {
+                --paper-spinner-stroke-width: 4px;
+            }
+            paper-spinner{
+                z-index: 10000000;
+            }
+
+            paper-dialog.position {
+                position: fixed;
+            }
+            paper-dialog {
+                overflow : scroll;
+            }
+        </style>
+
+        <paper-fab icon="camera-enhance" class="blue" id="paper_button" on-click="handleLogin">Button</paper-fab>
+        <paper-spinner id="dialog_loading_icon" class="loading-icon thick"></paper-spinner>
+        <paper-toast id="login_toast" text="Wrong username or password!"></paper-toast>
+        <paper-dialog id="paper_dialog" class="position" modal>
+            <paper-alert-dialog id="login_dialog"  dismiss-button="Cancel" confirm-button="Sign in" on-confirm="SendRequest" >
+                <paper-textarea id="username_textarea" label="Username"></paper-textarea>
+                <br/>
+                <paper-input id="password_textarea" label="Password" type="password"></paper-input>
+            </paper-alert-dialog>
+            <p>Your screenshot
+                <paper-button dialog-confirm on-click="saveScreenshot" autofocus>Send</paper-button>
+
+            </p>
+            <div on-click="addPin" class="image-wrapper">
+
+                <template id="attach_pin_template" is="dom-repeat" items="{{pinCoords}}" as="pin" mutable-data>
+                    <iron-icon class="attach-pin" icon="maps:place" style$="top:[[pin.y]]px;left:[[pin.x]]px"></iron-icon>
+                </template>
+
+                <div><img id="dialog_img"/></div>
+                </div>
+            <paper-alert-dialog id="comment_dialog" title="Add comment" dismiss-button="Cancel"
+                                confirm-button="Save" on-confirm="confirm_pin" on-dismiss="dismiss_pin">
+                <paper-textarea id="comment_textarea" label="Comment..."></paper-textarea>
+            </paper-alert-dialog>
+        </paper-dialog>
+
+
+    </template>
+
+    <script>
+        const padding = 20;
+        const pinCorrection = 10;
+
+        class MyEl extends Polymer.Element {
+            static get is() {
+                return 'my-el';
+            }
+
+            static get properties() {
+                return {
+                    pinCoords: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    }
+                };
+            }
+
+            saveScreenshot() {
+                const url = "http://localhost:3000/screenshots";
+                const img_src = this.$.dialog_img.src;
+                const title = img_src.substring(img_src.lastIndexOf("/") + 1, img_src.length - 4);
+                const body = {
+                    title: title,
+                    comments: this.pinCoords,
+                };
+                fetch(url, {
+                    body: JSON.stringify(body),
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                }).then(response => {
+                    console.log(response);
+                    return response.json()
+                });
+                this.pinCoords.length = 0;
+                this.$.attach_pin_template.render();
+            }
+
+            addPin(event) {
+                const positionTop = event.currentTarget.getBoundingClientRect().top;
+                const positionLeft = event.currentTarget.getBoundingClientRect().left;
+                this.$.comment_dialog.open();
+
+                this.push('pinCoords', {
+                    x: event.clientX - positionLeft - padding + pinCorrection,
+                    y: event.clientY - positionTop - pinCorrection
+                });
+            }
+
+            confirm_pin() {
+                const pin = this.pinCoords[this.pinCoords.length - 1];
+                this.pinCoords.pop();
+
+                console.log(this.$.username_textarea.value)
+                this.push('pinCoords', {
+                    x: pin.x,
+                    y: pin.y,
+                    description: this.$.comment_textarea.value,
+                    author: this.$.username_textarea.value
+                });
+                console.log(this.pinCoords);
+                this.$.comment_textarea.value = "";
+            }
+
+            dismiss_pin() {
+                this.pop('pinCoords');
+            }
+
+
+            handleLogin() {
+                this.$.login_dialog.open();
+            }
+
+
+            SendRequest() {
+                const loginUrl ="http://localhost:3000/users";
+                console.log(this.$.username_textarea.value);
+                console.log(this.$.password_textarea.value);
+
+                fetch(loginUrl, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: this.$.username_textarea.value,
+                        password: this.$.password_textarea.value
+                    }),
+                }).then(response => {
+                    if(response.status == 201)
+                    {
+                        const loading_icon = this.$.dialog_loading_icon;
+                        loading_icon.active = true;
+                        const url = "http://localhost:3000/convert";
+                        const data = {
+                            url: window.location.href.toString()
+                        };
+                        fetch(url, {
+                            body: JSON.stringify(data),
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            method: 'POST',
+                            mode: 'cors'
+                        }).then(response => {
+                            return response.json()
+                        }).then(data => {
+                            loading_icon.active = false;
+                            this.$.paper_dialog.open();
+                            this.$.dialog_img.src = data.data;
+                            console.log(data)
+                        });
+                    }
+                    if(response.status ==401)
+                    {
+                        console.log('login failure')
+                        this.$.login_toast.open();
+                        this.$.login_dialog.open();
+                    }
+                });
+
+            }
+        }
+        window.customElements.define(MyEl.is, MyEl);
+
+    </script>
+</dom-module>

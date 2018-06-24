@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>my-el demo</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../my-el.html">
+    <style>
+      body, html {
+        height: 100%;
+      }
+      .bg {
+        background-image: url("images/bg.jpg");
+        height: 100%;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+      .position {
+        position: fixed;
+      }
+    </style>
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+  </head>
+  <body class="bg">
+    <div class="position">
+      <my-el></my-el>
+    </div>
+  </body>
+</html>
